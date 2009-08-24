@@ -43,10 +43,14 @@ describe FilterFu::ActiveRecord do
       lambda { Employee.filtered_by }.should raise_error(ArgumentError)
     end
     
+    it "should not fail if the hash with filter params is nil" do
+      lambda { Employee.filtered_by(nil) }.should_not raise_error(NoMethodError)
+    end
+    
     it "should return an instace of ActiveRecord::NamedScope::Scope" do      
       Employee.filtered_by({ :boss => nil }).class.should == ActiveRecord::NamedScope::Scope
     end
-    
+        
     it "should call named scopes if specified in the filter params" do
       Employee.should_receive(:boss)
       Employee.filtered_by({ :boss => '' })
@@ -74,6 +78,10 @@ describe FilterFu::ActiveRecord do
     
       it "should not create an anonymous scope if there is no column for it" do
         lambda { Employee.filtered_by(:non_existing_column => 'some value').all }.should_not raise_error(/no such column/)
+      end
+      
+      it "should not create an anonymous scope if the value is blank" do
+        Employee.filtered_by(:salary => '').should == Employee.all()
       end
       
       it "should create an anonymous scope that is able to handle an array of possible values for the filter" do

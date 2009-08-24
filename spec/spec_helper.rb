@@ -1,17 +1,14 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-require 'rubygems'
-require 'actionpack' 
-require 'activerecord'
-require 'action_view'
+begin
+  require File.dirname(__FILE__) + '/../../../../spec/spec_helper'
+rescue LoadError
+  puts "You need to install rspec in your base app"
+  exit
+end
 
 require 'filter_fu'
-require 'spec'
-require 'spec/autorun'
-#gem 'rspec-rails'
-
-
 
 Spec::Runner.configure do |config|
 

@@ -27,6 +27,7 @@ module FilterFu
     module SingletonMethods
       
       def filtered_by(filter)
+        filter ||= {}
         filter.symbolize_keys!
         
         filter.inject(self) do |memo, (scope, arg)|
@@ -42,7 +43,7 @@ module FilterFu
       private
       
       def build_anonymous_scope(scope, arg)
-        return {} unless column_names.include?(scope.to_s)
+        return {} unless column_names.include?(scope.to_s) && !arg.blank?
         { :conditions => { scope => arg } }
       end
       
