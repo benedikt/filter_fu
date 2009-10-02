@@ -39,99 +39,120 @@ describe FilterFu::ActiveRecord do
   
   describe "filtered_by" do
     
+    before(:each) do
+      @plain_class = Class.new(Employee)
+      @class = @plain_class.clone
+      @class.filter_fu if @class.respond_to?(:filter_fu)
+    end
+    
     it "should require a hash with filter params" do
-      lambda { Employee.filtered_by }.should raise_error(ArgumentError)
+      lambda { @class.filtered_by }.should raise_error(ArgumentError)
     end
     
     it "should not fail if the hash with filter params is nil" do
-      lambda { Employee.filtered_by(nil) }.should_not raise_error(NoMethodError)
+      lambda { @class.filtered_by(nil) }.should_not raise_error(NoMethodError)
+    end
+    
+    it "should not filter anything if the hash is nil" do
+      @class.filtered_by(nil).should == @class.all
+    end
+    
+    it "should not filter anything if the hash is empty" do
+      @class.filtered_by({}).should == @class.all
+    end
+    
+    it "should not return nil if all scopes were skipped" do
+      # This is ugly. Is there a better solution to this?
+      klass = @plain_class.filter_fu :only => :salary
+      klass.filtered_by({ :country => 'Whatever' }).should_not be_nil
+    end
+    
+    it "should handle HashWithIndifferentAccess correctly" do
+      @class.filtered_by(HashWithIndifferentAccess.new('salary' => 100000)).should == @class.all(:conditions => 'salary = 100000')
+      @class.filtered_by(HashWithIndifferentAccess.new('boss' => true)).should == @class.all(:conditions => "position = 'Boss'")
     end
     
     it "should return an instace of ActiveRecord::NamedScope::Scope" do      
-      Employee.filtered_by({ :boss => nil }).class.should == ActiveRecord::NamedScope::Scope
+      @class.filtered_by({ :boss => nil }).class.should == ActiveRecord::NamedScope::Scope
     end
         
     it "should call named scopes if specified in the filter params" do
-      Employee.should_receive(:boss)
-      Employee.filtered_by({ :boss => '' })
+      @class.should_receive(:boss)
+      @class.filtered_by({ :boss => '' })
     end
     
     it "should pass the value to the named scope" do
-      Employee.should_receive(:country).with('some value')
-      Employee.filtered_by({ :country => 'some value'})
+      @class.should_receive(:country).with('some value')
+      @class.filtered_by({ :country => 'some value'})
     end
     
     it "should only call the specified named scope if it is available" do
-      Employee.should_not_receive(:unavailable)
-      Employee.filtered_by({ :unavailable => '' })
+      @class.should_not_receive(:unavailable)
+      @class.filtered_by({ :unavailable => '' })
     end
     
     it "should allow multiple scopes at once and combine them" do
-      Employee.filtered_by({ :position => 'Worker', :country => 'Country 1'}).should == Employee.all(:conditions => { :position => 'Worker', :country => 'Country 1'})
+      @class.filtered_by({ :position => 'Worker', :country => 'Country 1'}).should == @class.all(:conditions => { :position => 'Worker', :country => 'Country 1'})
     end
     
     describe "when the given named scope is not available" do
       
       it "should create an anonymous scope using the filter options as conditions" do
-        Employee.filtered_by(:salary => 100000).should == Employee.all(:conditions => 'salary = 100000')
+        @class.filtered_by(:salary => 100000).should == @class.all(:conditions => 'salary = 100000')
       end
     
       it "should not create an anonymous scope if there is no column for it" do
-        lambda { Employee.filtered_by(:non_existing_column => 'some value').all }.should_not raise_error(/no such column/)
+        lambda { @class.filtered_by(:non_existing_column => 'some value').all }.should_not raise_error(/no such column/)
       end
       
       it "should not create an anonymous scope if the value is blank" do
-        Employee.filtered_by(:salary => '').should == Employee.all()
+        @class.filtered_by(:salary => '').should == @class.all()
       end
       
       it "should create an anonymous scope that is able to handle an array of possible values for the filter" do
-        Employee.filtered_by(:salary => [80000, 90000]).should == Employee.all(:conditions => 'salary IN (80000, 90000)')
+        @class.filtered_by(:salary => [80000, 90000]).should == @class.all(:conditions => 'salary IN (80000, 90000)')
       end
       
     end
 
     it "should not filter by scopes defined in :except option" do
-      class ModelWithExceptFilter < ActiveRecord::Base
-        filter_fu :except => :dont_access_me
-        named_scope :dont_access_me, {}
-        named_scope :access_me, {}
-      end
+      klass = @plain_class.clone
+      klass.filter_fu :except => :dont_access_me
+      klass.named_scope :dont_access_me, {}
+      klass.named_scope :access_me, {}
       
-      ModelWithExceptFilter.should_not_receive(:dont_access_me)
-      ModelWithExceptFilter.filtered_by(:dont_access_me => '')
+      klass.should_not_receive(:dont_access_me)
+      klass.filtered_by(:dont_access_me => '')
     end
     
     it "should filter by scopes not defined in :except option" do
-      class ModelWithExceptFilter < ActiveRecord::Base
-        filter_fu :except => :dont_access_me
-        named_scope :dont_access_me, {}
-        named_scope :access_me, {}
-      end
+      klass = @plain_class.clone
+      klass.filter_fu :except => :dont_access_me
+      klass.named_scope :dont_access_me, {}
+      klass.named_scope :access_me, {}
       
-      ModelWithExceptFilter.should_receive(:access_me)
-      ModelWithExceptFilter.filtered_by(:access_me => '')
+      klass.should_receive(:access_me)
+      klass.filtered_by(:access_me => '')
     end
     
     it "should only filter by scopes define in :only option" do
-      class ModelWithOnlyFilter < ActiveRecord::Base
-        filter_fu :only => :only_access_me
-        named_scope :only_access_me, {}
-        named_scope :dont_access_me, {}
-      end
+      klass = @plain_class.clone
+      klass.filter_fu :only => :only_access_me
+      klass.named_scope :only_access_me, {}
+      klass.named_scope :dont_access_me, {}
       
-      ModelWithOnlyFilter.should_receive(:only_access_me)
-      ModelWithOnlyFilter.filtered_by(:only_access_me => '')
+      klass.should_receive(:only_access_me)
+      klass.filtered_by(:only_access_me => '')
     end
     
     it "should not filter by scopes not defined in :only option" do
-      class ModelWithOnlyFilter < ActiveRecord::Base
-        filter_fu :only => :only_access_me
-        named_scope :only_access_me, {}
-        named_scope :dont_access_me, {}
-      end
+      klass = @plain_class.clone
+      klass.filter_fu :only => :only_access_me
+      klass.named_scope :only_access_me, {}
+      klass.named_scope :dont_access_me, {}
       
-      ModelWithOnlyFilter.should_not_receive(:dont_access_me)
-      ModelWithOnlyFilter.filtered_by(:dont_access_me => '')
+      klass.should_not_receive(:dont_access_me)
+      klass.filtered_by(:dont_access_me => '')
     end
   end
   

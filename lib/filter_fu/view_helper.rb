@@ -3,7 +3,7 @@ require 'ostruct'
 module FilterFu
   module ViewHelper
     
-    def self.included(base)
+    def self.included(base) # :nodoc:
       base.send :include, InstanceMethods
     end
     
@@ -26,6 +26,7 @@ module FilterFu
           block.call(f)
         end
       end
+      alias_method :filter_form, :filter_form_for
       
       private
       

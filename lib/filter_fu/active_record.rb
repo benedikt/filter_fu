@@ -1,7 +1,7 @@
 module FilterFu
   module ActiveRecord
     
-    def self.included(base)
+    def self.included(base) # :nodoc:
       base.extend(ClassMethods)
     end
     
@@ -27,17 +27,17 @@ module FilterFu
     module SingletonMethods
       
       def filtered_by(filter)
-        filter ||= {}
-        filter.symbolize_keys!
-        
+        return scoped({}) if !filter || filter.empty?
+                
         filter.inject(self) do |memo, (scope, arg)|
+          scope = scope.to_sym
           next if protected?(scope)
           if scopes.has_key?(scope)
             memo.send(scope, arg)
           else
             memo.scoped(build_anonymous_scope(scope, arg))
           end
-        end
+        end || scoped({})
       end
       
       private

@@ -1,5 +1,4 @@
 class Employee < ActiveRecord::Base
-  filter_fu if self.respond_to?(:filter_fu)
   
   named_scope :boss, :conditions => "position = 'Boss'"
   named_scope :country, lambda { |country| { :conditions => ["country = ?", country] } }

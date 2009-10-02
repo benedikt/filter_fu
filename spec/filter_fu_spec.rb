@@ -6,7 +6,7 @@ describe FilterFu do
     ActionView::Base.ancestors.should include(FilterFu::ViewHelper)
   end
   
-  it "should înclude FilterFu::ActiveRecord into ActiveRecord::Base" do
+  it "should include FilterFu::ActiveRecord into ActiveRecord::Base" do
     ActiveRecord::Base.ancestors.should include(FilterFu::ActiveRecord)
   end
   

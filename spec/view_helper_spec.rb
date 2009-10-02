@@ -17,6 +17,10 @@ describe FilterFu::ViewHelper, :type => :helper do
     helper.should respond_to(:filter_form_for)
   end
   
+  it "should prodive a filter_form method as an alias for filter_form" do
+    helper.should respond_to(:filter_form)
+  end
+  
   it "should require a block" do
     lambda { helper.filter_form_for }.should raise_error(ArgumentError, /Missing block/)
   end
