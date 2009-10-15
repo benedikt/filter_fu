@@ -1,6 +1,74 @@
 = filter_fu
 
-TODO
+This Ruby on Rails plugin adds a filtered_by method to your models. It accepts a hash of filters that are applied using named_scopes. In addition the plugin adds some view helpers to easily build filter forms.
+
+== Install
+
+You can install filter_fu as a gem or as a rails plugin.
+
+=== Install as gem
+
+Add this line to your <tt>config/environment.rb</tt> and run <tt>rake gems:install</tt>
+
+  config.gem 'filter_fu', :source => 'http://www.gemcutter.org'
+  
+=== Install as plugin
+
+Run this command in your currrent project's +RAILS_ROOT+
+
+  ./script/plugin install git://github.com/benedikt/filter_fu.git
+
+== Usage
+
+=== Models
+
+To enable filter_fu on a model, simply add one line to its definition:
+
+  class Project
+    filter_fu
+  end
+  
+Let's say you don't want your Projects list filtered by its +hidden+ column. You can easly
+tell filter_fu to ignore certian named scopes or columns:
+  
+  class Project
+    filter_fu :except => [:hidden]
+  end
+
+Of course this also works the other way round using the <tt>:only</tt> option to only allow filtering 
+for the given named scopes or columns:
+
+  class Project
+    filter_fu :only => [:starts_on, :ends_on]
+  end
+  
+Once you enabled filter_fu on your model it provides a filtered_by method.
+
+  Project.filtered_by(params[:filter])
+  Project.filtered_by(params[:filter]).some.named_scopes
+  Project.some.other.named_scopes.filtered_by(params[:filter])
+  
+
+=== Helper
+
+filter_fu comes with helpers to simplify the generation of filter forms:
+
+  <% filter_form do |f| %>
+    # f is a ActionView::Helpers::FormBuilder
+  <% end %>
+
+You can also specify a name for the filter (Default is <tt>:filter</tt>). This way you're able to have multiple filters on the same page.
+
+  <% filter_form_for(:product_filter) do |f| %>
+    # f is a ActionView::Helpers::FormBuilder
+  <% end %>  
+
+filter_fu will automatically include all other parameters for the current page (ie. pagination parameters) within the form. 
+If you wish to explicitly exclude some you can do this by passing an array as :ignore_parameters option.
+
+  <% filter_form_for(:product_filter, :ignore_parameters => [:page]) do |f| %>
+    # f is a ActionView::Helpers::FormBuilder
+  <% end %>
 
 == Copyright
 
