@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benedikt Deicke"]
-  s.date = %q{2009-10-02}
-  s.description = %q{TODO: longer description of your gem}
+  s.date = %q{2009-10-15}
+  s.description = %q{This Ruby on Rails plugin adds a filtered_by method to your models. It accepts a hash of filters that are applied using named_scopes. In addition the plugin adds some view helpers to easily build filter forms.}
   s.email = %q{benedikt@synatic.net}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "filter_fu.gemspec",
      "lib/filter_fu.rb",
      "lib/filter_fu/active_record.rb",
      "lib/filter_fu/view_helper.rb",
