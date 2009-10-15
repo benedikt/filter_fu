@@ -6,13 +6,14 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "filter_fu"
     gem.summary = %Q{Filter ActiveRecord models using named_scopes}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.description = %Q{This Ruby on Rails plugin adds a filtered_by method to your models. It accepts a hash of filters that are applied using named_scopes. In addition the plugin adds some view helpers to easily build filter forms.}
     gem.email = "benedikt@synatic.net"
     gem.homepage = "http://github.com/benedikt/filter_fu"
     gem.authors = ["Benedikt Deicke"]
     gem.add_development_dependency "rspec"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
