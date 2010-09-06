@@ -1,60 +1,33 @@
-require 'rubygems'
-require 'rake'
+require 'rspec/core'
+require 'rspec/core/rake_task'
+require 'hanna/rdoctask'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "filter_fu"
-    gem.summary = %Q{Filter ActiveRecord models using named_scopes}
-    gem.description = %Q{This Ruby on Rails plugin adds a filtered_by method to your models. It accepts a hash of filters that are applied using named_scopes. In addition the plugin adds some view helpers to easily build filter forms.}
-    gem.email = "benedikt@synatic.net"
-    gem.homepage = "http://github.com/benedikt/filter_fu"
-    gem.authors = ["Benedikt Deicke"]
-    gem.add_development_dependency "rspec"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
-end
+spec = Gem::Specification.load("filter_fu.gemspec")
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_opts = ['--options', 'spec/spec.opts']
-  spec.spec_files = FileList['spec/**/*_spec.rb']
-end
-
-namespace :spec do 
-  Spec::Rake::SpecTask.new(:rcov) do |spec|
-    spec.libs << 'lib'
-    spec.pattern = 'spec/**/*_spec.rb'
-    spec.rcov = true
-    spec.rcov_opts = ["--exclude", "^/,^spec/"]
-  end
-
-  Spec::Rake::SpecTask.new(:doc) do |spec|
-    spec.libs << 'lib' << 'spec'
-    spec.spec_opts = ["--color", "--format", "specdoc"]
-    spec.pattern = 'spec/**/*_spec.rb'
-  end
-end
-
-task :spec => :check_dependencies
-
+RSpec::Core::RakeTask.new
 task :default => :spec
 
-require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
-  if File.exist?('VERSION')
-    version = File.read('VERSION')
-  else
-    version = ""
-  end
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "filter_fu #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('LICENSE*')
+  rdoc.rdoc_dir = 'doc'
+  rdoc.title = "#{spec.name} #{spec.version}"
+  rdoc.options += spec.rdoc_options
+  rdoc.rdoc_files.include(spec.extra_rdoc_files)
   rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+desc "Generates a sandbox Rails app for testing"
+namespace :spec do
+  task "sandbox" do
+    system "mkdir -p tmp/ && bundle exec rails new tmp/sandbox --skip-gemfile"
+  end
+end
+
+desc "Build the .gem file"
+task :build do
+  system "gem build #{spec.name}.gemspec"
+end
+
+desc "Push the .gem file to rubygems.org"
+task :release => :build do
+  system "gem push #{spec.name}-#{spec.version}.gem"
 end
