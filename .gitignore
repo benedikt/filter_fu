@@ -3,4 +3,5 @@
 coverage
 rdoc
 pkg
-spec/debug.log
+spec/db/debug.log
+tmp

@@ -1,5 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require File.expand_path(File.dirname(__FILE__) + '/fixtures/employee')
+require 'spec_helper'
 
 describe FilterFu::ActiveRecord do
   
@@ -7,7 +6,7 @@ describe FilterFu::ActiveRecord do
     ActiveRecord::Base.should respond_to(:filter_fu)
   end
 
-  describe "filter_fu" do
+  describe "-filter_fu" do
     
     it "should accept an options hash" do
       lambda { ActiveRecord::Base.filter_fu({}) }.should_not raise_error(ArgumentError)
@@ -37,7 +36,7 @@ describe FilterFu::ActiveRecord do
     
   end
   
-  describe "filtered_by" do
+  describe "-filtered_by" do
     
     before(:each) do
       @plain_class = Class.new(Employee)
@@ -118,8 +117,8 @@ describe FilterFu::ActiveRecord do
     it "should not filter by scopes defined in :except option" do
       klass = @plain_class.clone
       klass.filter_fu :except => :dont_access_me
-      klass.named_scope :dont_access_me, {}
-      klass.named_scope :access_me, {}
+      klass.scope :dont_access_me, {}
+      klass.scope :access_me, {}
       
       klass.should_not_receive(:dont_access_me)
       klass.filtered_by(:dont_access_me => '')
@@ -128,8 +127,8 @@ describe FilterFu::ActiveRecord do
     it "should filter by scopes not defined in :except option" do
       klass = @plain_class.clone
       klass.filter_fu :except => :dont_access_me
-      klass.named_scope :dont_access_me, {}
-      klass.named_scope :access_me, {}
+      klass.scope :dont_access_me, {}
+      klass.scope :access_me, {}
       
       klass.should_receive(:access_me)
       klass.filtered_by(:access_me => '')
@@ -138,8 +137,8 @@ describe FilterFu::ActiveRecord do
     it "should only filter by scopes define in :only option" do
       klass = @plain_class.clone
       klass.filter_fu :only => :only_access_me
-      klass.named_scope :only_access_me, {}
-      klass.named_scope :dont_access_me, {}
+      klass.scope :only_access_me, {}
+      klass.scope :dont_access_me, {}
       
       klass.should_receive(:only_access_me)
       klass.filtered_by(:only_access_me => '')
@@ -148,8 +147,8 @@ describe FilterFu::ActiveRecord do
     it "should not filter by scopes not defined in :only option" do
       klass = @plain_class.clone
       klass.filter_fu :only => :only_access_me
-      klass.named_scope :only_access_me, {}
-      klass.named_scope :dont_access_me, {}
+      klass.scope :only_access_me, {}
+      klass.scope :dont_access_me, {}
       
       klass.should_not_receive(:dont_access_me)
       klass.filtered_by(:dont_access_me => '')

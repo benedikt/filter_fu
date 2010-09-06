@@ -1,5 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require 'dummies'
+require 'spec_helper'
 
 describe FilterFu::ViewHelper, :type => :helper do
   
