@@ -72,7 +72,9 @@ If you wish to explicitly exclude some you can do this by passing an array as :i
     # f is a ActionView::Helpers::FormBuilder
   <% end %>
 
+It's possible to add default values for <tt>:ignore_parameters</tt>. Simply add something like this to your initializers:
 
+  config.filter_fu.ignore_parameters = [:param_to_ignore]
 
 == Known issues
 

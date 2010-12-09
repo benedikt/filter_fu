@@ -26,7 +26,8 @@ module FilterFu
         name = (args.first || :filter).to_sym
 
         opts[:ignore_parameters] ||= []
-        opts[:ignore_parameters] += [:controller, :action, name]
+        opts[:ignore_parameters] += FilterFu.ignore_parameters + [:controller, :action, name]
+        opts[:ignore_parameters].uniq!
 
         opts[:html] ||= {}
         opts[:html][:method] ||= :get
