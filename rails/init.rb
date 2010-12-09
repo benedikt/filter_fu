@@ -1,1 +1,0 @@
-require 'filter_fu'

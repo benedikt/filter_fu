@@ -1,9 +1,6 @@
 module FilterFu
   module ActiveRecord
-
-    def self.included(base) # :nodoc:
-      base.extend(ClassMethods)
-    end
+    extend ActiveSupport::Concern
 
     module ClassMethods
 
