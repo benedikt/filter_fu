@@ -6,5 +6,5 @@ ActiveRecord::Schema.define(:version => 0) do
     t.string  :position
     t.integer :salary
   end
-  
+
 end

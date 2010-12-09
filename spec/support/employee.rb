@@ -1,5 +1,5 @@
 class Employee < ActiveRecord::Base
-  
+
   scope :boss, :conditions => "position = 'Boss'"
   scope :country, lambda { |country| { :conditions => ["country = ?", country] } }
 

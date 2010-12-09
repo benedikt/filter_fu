@@ -29,27 +29,27 @@ To enable filter_fu on a model, simply add one line to its definition:
   class Project < ActiveRecord::Base
     filter_fu
   end
-  
+
 Let's say you don't want your Projects list filtered by its +hidden+ column. You can easly
 tell filter_fu to ignore certian named scopes or columns:
-  
+
   class Project < ActiveRecord::Base
     filter_fu :except => [:hidden]
   end
 
-Of course this also works the other way round using the <tt>:only</tt> option to only allow filtering 
+Of course this also works the other way round using the <tt>:only</tt> option to only allow filtering
 for the given named scopes or columns:
 
   class Project < ActiveRecord::Base
     filter_fu :only => [:starts_on, :ends_on]
   end
-  
+
 Once you enabled filter_fu on your model it provides a filtered_by method.
 
   Project.filtered_by(params[:filter])
   Project.filtered_by(params[:filter]).some.named_scopes
   Project.some.other.scopes.filtered_by(params[:filter])
-  
+
 
 === Helper
 
@@ -63,9 +63,9 @@ You can also specify a name for the filter (Default is <tt>:filter</tt>). This w
 
   <%= filter_form_for(:product_filter) do |f| %>
     # f is a ActionView::Helpers::FormBuilder
-  <% end %>  
+  <% end %>
 
-filter_fu will automatically include all other parameters for the current page (ie. pagination parameters) within the form. 
+filter_fu will automatically include all other parameters for the current page (ie. pagination parameters) within the form.
 If you wish to explicitly exclude some you can do this by passing an array as :ignore_parameters option.
 
   <%= filter_form_for(:product_filter, :ignore_parameters => [:page]) do |f| %>

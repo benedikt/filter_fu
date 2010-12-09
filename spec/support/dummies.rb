@@ -2,13 +2,13 @@
 
 class DummyRequest
   attr_accessor :symbolized_path_parameters
-  
+
   def initialize
     @get = true
     @params = {}
     @symbolized_path_parameters = { :controller => 'foo', :action => 'bar' }
   end
-  
+
   def get?
     @get
   end
@@ -30,7 +30,7 @@ end
 class DummyController
   attr_reader :request
   attr_accessor :controller_name
-  
+
   def initialize
     @request = DummyRequest.new
     @url = ActionController::UrlRewriter.new(@request, @request.params)
@@ -39,7 +39,7 @@ class DummyController
   def params
     @request.params
   end
-  
+
   def url_for(params)
     @url.rewrite(params)
   end
