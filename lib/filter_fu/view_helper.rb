@@ -7,7 +7,7 @@ module FilterFu
     extend ActiveModel::Translation
 
     def initialize(*args)
-      super(*args)
+      super
     end
   end
 
@@ -31,7 +31,7 @@ module FilterFu
         opts[:html] ||= {}
         opts[:html][:method] ||= :get
         opts[:as] = name
-        opts[:url] = ""
+        opts[:url] = {}
 
         form_for(FilterFu::FilterModel.new(params[name]), opts) do |f|
           hidden_fields_for(params, opts)
