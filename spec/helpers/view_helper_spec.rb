@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe FilterFu::ViewHelper do
 
-
   it "should provide a filter_form_for method" do
     helper.should respond_to(:filter_form_for)
   end
@@ -39,7 +38,7 @@ describe FilterFu::ViewHelper do
 
   it "should include the erb of the block" do
     html = helper.filter_form_for { "<div>Some random HTML</div>" }
-    html.should have_selector('div', 'Some random HTML')
+    html.should contain('Some random HTML')
   end
 
   it "should include a form tag" do
@@ -49,69 +48,68 @@ describe FilterFu::ViewHelper do
 
   it "should set the form method attribute to GET" do
     html = helper.filter_form_for { }
-    html.should have_selector('form[method=?]', 'get')
+    html.should have_selector('form', :method => 'get')
   end
 
   it "should set the form action attribute to the current url" do
-    # Controller and Action are foo and bar as defined in the dummies
     html = helper.filter_form_for { }
-    html.should have_selector('form[action=?]', '/foo/bar')
+    html.should have_selector('form', :action => '/foo/bar')
   end
 
   it "should use :filter as the default namespace in form fields" do
     html = helper.filter_form_for { |f| f.text_field :name }
-    html.should have_selector('input[name=?]', 'filter[name]')
+    html.should have_selector('input', :name => 'filter[name]')
   end
 
   it "should use another name as namespace if it's provided as the first argument" do
     html = helper.filter_form_for(:other) { |f| f.text_field :name }
-    html.should have_selector('input[name=?]', 'other[name]')
+    html.should have_selector('input', :name => 'other[name]')
   end
 
   it "should pass options to the form_for helper" do
     html = helper.filter_form_for(:html => { :class => 'filter' }) { }
-    html.should have_selector('form[class=?]', 'filter')
+    html.should have_selector('form', :class => 'filter')
   end
 
   it "should preserve the page's parameters with hidden fields" do
     helper.stub(:params).and_return({ :some_param => 'some value', :some_other_param => 'some other value' })
     html = helper.filter_form_for() { }
-    html.should have_selector('input[type=?][name=?][value=?]', 'hidden', 'some_param', 'some value')
-    html.should have_selector('input[type=?][name=?][value=?]', 'hidden', 'some_other_param', 'some other value')
+    html.should have_selector('input', :type => 'hidden', :name => 'some_param', :value => 'some value')
+    html.should have_selector('input', :type => 'hidden', :name => 'some_other_param', :value => 'some other value')
   end
 
   it "should preserve the page's nested parameters with hidden fields" do
     helper.stub(:params).and_return({ :some_param => 'some value', :nested => { :some_other_param => 'some other value', :deeply_nested => { :down_here => 'yet another value' } } })
     html = helper.filter_form_for() { }
-    html.should have_selector('input[type=?][name=?][value=?]', 'hidden', 'some_param', 'some value')
-    html.should have_selector('input[type=?][name=?][value=?]', 'hidden', 'nested[some_other_param]', 'some other value')
-    html.should have_selector('input[type=?][name=?][value=?]', 'hidden', 'nested[deeply_nested][down_here]', 'yet another value')
+    html.should have_selector('input', :type => 'hidden', :name => 'some_param', :value => 'some value')
+    html.should have_selector('input', :type => 'hidden', :name => 'nested[some_other_param]', :value => 'some other value')
+    html.should have_selector('input', :type => 'hidden', :name => 'nested[deeply_nested][down_here]', :value => 'yet another value')
   end
 
   it "should not preserve the page's parameters for the current filter" do
     helper.stub(:params).and_return({ :other => { :name => 'some value' }})
     html = helper.filter_form_for(:other) { }
-    html.should_not have_selector('input[type=?][name=?]', 'hidden', 'other')
-    html.should_not have_selector('input[type=?][name=?][value=?]', 'hidden', 'other[name]', 'some value')
+    html.should_not have_selector('input', :type => 'hidden', :name => 'other')
+    html.should_not have_selector('input', :type => 'hidden', :name => 'other[name]', :value => 'some value')
   end
 
   it "should not preserve the controller and action params" do
     helper.stub(:params).and_return({ :controller => 'foo', :action => 'bar' })
     html = helper.filter_form_for() { }
-    html.should_not have_selector('input[type=?][name=?][value=?]', 'hidden', 'controller', 'foo')
-    html.should_not have_selector('input[type=?][name=?][value=?]', 'hidden', 'action', 'bar')
+    html.should_not have_selector('input', :type => 'hidden', :name => 'controller', :value => 'foo')
+    html.should_not have_selector('input', :type => 'hidden', :name => 'action', :value => 'bar')
   end
 
   it "should not preserve params specified in :ignore_parameters" do
     helper.stub(:params).and_return({ :some_param => 'some value', :some_other_param => 'some other value' })
     html = helper.filter_form_for(:ignore_parameters => [:some_other_param]) { }
-    html.should have_selector('input[type=?][name=?][value=?]', 'hidden', 'some_param', 'some value')
-    html.should_not have_selector('input[type=?][name=?][value=?]', 'hidden', 'some_other_param', 'some other value')
+    html.should have_selector('input', :type => 'hidden', :name => 'some_param', :value => 'some value')
+    html.should_not have_selector('input', :type => 'hidden', :name => 'some_other_param', :value => 'some other value')
   end
 
   it "should use the current filter params as defaults for the form" do
     helper.stub(:params).and_return({ :filter => { :some_param => 'some value' } })
     html = helper.filter_form_for() { |f| f.text_field :some_param }
-    html.should have_selector('input[type=?][name=?][value=?]', 'text', 'filter[some_param]', 'some value')
+    html.should have_selector('input', :type => 'text', :name => 'filter[some_param]', :value => 'some value')
   end
 end

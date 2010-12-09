@@ -6,7 +6,7 @@ describe FilterFu::ActiveRecord do
     ActiveRecord::Base.should respond_to(:filter_fu)
   end
 
-  describe "-filter_fu" do
+  describe ".filter_fu" do
 
     it "should accept an options hash" do
       lambda { ActiveRecord::Base.filter_fu({}) }.should_not raise_error(ArgumentError)
@@ -36,7 +36,7 @@ describe FilterFu::ActiveRecord do
 
   end
 
-  describe "-filtered_by" do
+  describe ".filtered_by" do
 
     before(:each) do
       @plain_class = Class.new(Employee)

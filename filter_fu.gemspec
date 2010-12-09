@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('rails', ['~> 3.0.0'])
   s.add_development_dependency('rspec', ['>= 2.0.0.beta.18'])
   s.add_development_dependency('rspec-rails', ['>= 2.0.0.beta.18'])
+  s.add_development_dependency('webrat', ['>= 0.7.2'])
   s.add_development_dependency('autotest', ['>= 4.3.2'])
   s.add_development_dependency('hanna', ['>= 0.1.12'])
 end
