@@ -107,7 +107,7 @@ DEPENDENCIES
   filter_fu!
   hanna (>= 0.1.12)
   rails (~> 3.0.0)
-  rspec (>= 2.0.0.beta.18)
-  rspec-rails (>= 2.0.0.beta.18)
+  rspec (~> 2.0)
+  rspec-rails (~> 2.0)
   sqlite3-ruby
   webrat (>= 0.7.2)

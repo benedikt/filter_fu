@@ -13,4 +13,8 @@ module FilterFu
       ::ActionView::Base.send   :include, FilterFu::ViewHelper if defined? ::ActionView::Base
     end
   end
+
+  def self.configure
+    yield self
+  end
 end
