@@ -3,3 +3,4 @@
 doc
 spec/db/debug.log
 tmp
+*.gem

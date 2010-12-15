@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.platform      = Gem::Platform::RUBY
   s.authors       = ["Benedikt Deicke"]
   s.email         = ["benedikt@synatic.net"]
-  s.homepage      = "http://github.com/benedikt/maptastic"
+  s.homepage      = "http://github.com/benedikt/filter_fu"
   s.summary       = "Filter ActiveRecord models using scopes"
   s.description   = "This Ruby on Rails plugin adds a filtered_by method to your models. It accepts a hash of filters that are applied using scopes. In addition the plugin adds some view helpers to easily build filter forms."
 
