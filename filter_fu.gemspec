@@ -19,6 +19,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec-rails', ['~> 2.0'])
   s.add_development_dependency('webrat', ['>= 0.7.2'])
   s.add_development_dependency('autotest', ['>= 4.3.2'])
-  s.add_development_dependency('hanna', ['>= 0.1.12'])
+  s.add_development_dependency('hanna-nouveau', ['>= 0.2.2'])
 end
 
