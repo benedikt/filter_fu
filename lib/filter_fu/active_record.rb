@@ -29,7 +29,7 @@ module FilterFu
         filter.inject(self) do |memo, (scope, arg)|
           scope = scope.to_sym
           next if protected?(scope)
-          if scopes.has_key?(scope)
+          if memo.respond_to?(scope)
             memo.send(scope, arg)
           else
             memo.scoped(build_anonymous_scope(scope, arg))

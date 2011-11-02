@@ -87,6 +87,7 @@ describe FilterFu::ActiveRecord do
 
     it "should only call the specified named scope if it is available" do
       @class.should_not_receive(:unavailable)
+      @class.stub(:respond_to?).with(:unavailable).and_return(false)
       @class.filtered_by({ :unavailable => '' })
     end
 
