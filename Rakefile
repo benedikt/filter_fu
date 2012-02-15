@@ -8,7 +8,6 @@ RSpec::Core::RakeTask.new
 task :default => :spec
 
 Rake::RDocTask.new do |rdoc|
-  rdoc.generator = 'hanna'
   rdoc.rdoc_dir = 'doc'
   rdoc.title = "#{spec.name} #{spec.version}"
   rdoc.options += spec.rdoc_options
